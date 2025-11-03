@@ -37,7 +37,11 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	
+
+	// Fiber Configuration API
+//	implementation "me.zeroeightsix:fiber:${project.fiber_version}"
+
+//	modImplementation "eu.pb4:banhammer:0.14.1+1.21.8"
 }
 
 processResources {
