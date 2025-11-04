@@ -46,6 +46,12 @@ public class InfernoUtils implements ModInitializer {
 				String deathTypeId = damageSource.getTypeRegistryEntry().getIdAsString();
 				Entity attacker = damageSource.getAttacker();
 				List<String> banExclusions = List.of(InfernoConfig.getStringArray("ban_exclusions"));
+				if (InfernoConfig.config.getOrDefault("debug", true)) {
+                    LOGGER.debug("{} died by {}", playerEntity.getDisplayName().getString(), deathTypeId);
+                    LOGGER.debug("Attacker is {}", (attacker != null ? attacker.getDisplayName().getString() : "non existent"));
+					LOGGER.debug("Excluded deaths: {}", String.join(", ", banExclusions));
+					LOGGER.debug("Source is {}", (damageSource.getSource() != null ? damageSource.getSource().getDisplayName().getString() : "non existent"));
+				}
 				if ((attacker instanceof PlayerEntity || !banExclusions.contains(deathTypeId)) && attacker != entity) {
 					MinecraftServer server = playerEntity.getServer();
 					String command = null;
