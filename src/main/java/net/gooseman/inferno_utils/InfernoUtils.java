@@ -101,7 +101,9 @@ public class InfernoUtils implements ModInitializer {
 				LOGGER.warn("Source is {}", (source != null ? source.getDisplayName().getString() : "non existent"));
 			}
 
-			if (lastCombatTime != null && currentTime - lastCombatTime <= InfernoConfig.config.getOrDefault("combat_length", 400)) {
+			if ((lastCombatTime != null && currentTime - lastCombatTime <= InfernoConfig.config.getOrDefault("combat_length", 400)) ||
+					(attacker instanceof PlayerEntity playerAttacker && playerAttacker != player)) {
+				playerCombatTracker.remove(playerUuid);
 				temporaryBan(player, "death_ban_time", "death_ban_reason");
 			} else if (probableTraps.contains(deathTypeId) ||
 					(deathTypeId.equals("minecraft:indirect_magic") && source.getType() == EntityType.SPLASH_POTION && attacker == null) ||
