@@ -107,7 +107,7 @@ public class InfernoUtils implements ModInitializer {
 				temporaryBan(player, "death_ban_time", "death_ban_reason");
 			} else if (probableTraps.contains(deathTypeId) ||
 					(deathTypeId.equals("minecraft:indirect_magic") && source.getType() == EntityType.SPLASH_POTION && attacker == null) ||
-					((deathTypeId.equals("minecraft:explosion") || deathTypeId.equals("minecraft:player_explosion")) && (attacker == null || (!explosionExclusion.contains(attacker.getType()) && !explosionExclusion.contains(source.getType()))))) {
+					((deathTypeId.equals("minecraft:explosion") || deathTypeId.equals("minecraft:player_explosion")) && (attacker == null || (!explosionExclusion.contains(attacker.getType()) && !explosionExclusion.contains(source.getType()))) && entity != attacker)) {
 				temporaryBan(player, "death_ban_time", "death_ban_reason");
 			}
 		}));
