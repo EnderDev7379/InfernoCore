@@ -24,11 +24,6 @@ public class InfernoConfig {
                     combat_ban_time=8h
                     # Reason for the combat logging ban
                     combat_ban_reason=Combat logging isn't permitted! If you weren't in combat, or you think this ban is otherwise unfair, please contact the moderators through the #tickets discord channel.
-                    
-                    # What Damage Types don't put the player in combat / cause a ban on death, comma seperated list
-                    # For possible values and their explanations check out https://minecraft.wiki/w/Damage_type#List_of_damage_types
-                    # Append the namespace of the damage type (e.g. "minecraft:" for vanilla damage types) in front of the damage type
-                    combat_exclusions=[minecraft:sweet_berry_bush,minecraft:sting,starve,minecraft:spit,minecraft:sonic_boom,minecraft:outside_border,minecraft:out_of_world,minecraft:mob_projectile,minecraft:mob_attack_no_aggro,minecraft:mob_attack,minecraft:lightning_bolt,minecraft:hot_floor,minecraft:generic_kill,minecraft:generic,minecraft:freeze,minecraft:fly_into_wall,minecraft:fireball,minecraft:ender_pearl,minecraft:drown,minecraft:cramming,minecraft:campfire,minecraft:cactus,minecraft:arrow]
                     """;
     }
     public static SimpleConfig.ConfigRequest configRequest = SimpleConfig.of("inferno_utils-config").provider(InfernoConfig::provider);

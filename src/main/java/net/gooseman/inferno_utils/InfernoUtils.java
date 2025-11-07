@@ -5,16 +5,31 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.gooseman.inferno_utils.config.InfernoConfig;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.event.GameEvent;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +50,7 @@ public class InfernoUtils implements ModInitializer {
 	public List<EntityType<?>> explosionExclusion = List.of(new EntityType<?>[]{EntityType.CREEPER, EntityType.GHAST, EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.END_CRYSTAL});
 
 	public void temporaryBan(PlayerEntity playerEntity, String timeKey, String reasonKey) {
+		InfernoConfig.reloadConfig();
 		MinecraftServer server = playerEntity.getServer();
 		String command = null;
 		try {
@@ -64,6 +80,29 @@ public class InfernoUtils implements ModInitializer {
 			}
 			return ActionResult.PASS;
         });
+
+		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+			if (!(world instanceof ServerWorld serverWorld) || !(player instanceof ServerPlayerEntity serverPlayer) || player.getGameMode() == GameMode.SPECTATOR) return ActionResult.PASS;
+
+			BlockPos blockPos = hitResult.getBlockPos();
+			BlockState blockState = world.getBlockState(blockPos);
+			ItemStack heldItem = player.getStackInHand(hand);
+			if (heldItem.isIn(ItemTags.HOES) && blockState.isIn(ModTags.BlockTags.FARMABLE)) {
+				if (blockState.isOf(Blocks.NETHER_WART) || blockState.isOf(Blocks.BEETROOTS))
+					if (blockState.get(Properties.AGE_3) != 3) return ActionResult.PASS;
+				else if (blockState.get(Properties.AGE_7) != 7) return ActionResult.PASS;
+
+				heldItem.damage(1, player, hand);
+				Block.getDroppedStacks(blockState, serverWorld, blockPos, null, player, heldItem).forEach(stack -> Block.dropStack(world, blockPos, (stack.isOf(Items.WHEAT) || stack.isOf(Items.BEETROOT) ? stack : stack.copyWithCount(stack.getCount() - 1))));
+				blockState.onStacksDropped(serverWorld, blockPos, heldItem, true);
+				serverWorld.setBlockState(blockPos, blockState.getBlock().getDefaultState());
+				serverWorld.emitGameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
+				serverWorld.playSound(null, blockPos, SoundEvents.BLOCK_CROP_BREAK, SoundCategory.BLOCKS);
+				return ActionResult.SUCCESS_SERVER;
+			}
+
+			return ActionResult.PASS;
+		});
 
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamageTaken, damageTaken, blocked) -> {
 			if (entity instanceof PlayerEntity victim && source.getAttacker() instanceof PlayerEntity attacker && victim != attacker) {
