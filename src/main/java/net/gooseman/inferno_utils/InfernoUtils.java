@@ -11,13 +11,11 @@ import net.gooseman.inferno_utils.config.InfernoConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CropBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,7 +28,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.event.GameEvent;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,11 +73,14 @@ public class InfernoUtils implements ModInitializer {
 		InfernoConfig.reloadConfig();
 
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			if (!world.isClient && player.getGameMode() != GameMode.SPECTATOR && player.getStackInHand(hand).isOf(Items.FIREWORK_ROCKET)) {
+			if (!(world instanceof ServerWorld serverWorld) || !(player instanceof ServerPlayerEntity serverPlayer) || player.getGameMode() == GameMode.SPECTATOR) return ActionResult.PASS;
+
+			ItemStack heldItem = player.getStackInHand(hand);
+			if (heldItem.isOf(Items.FIREWORK_ROCKET))
 				return ActionResult.FAIL;
-			}
+
 			return ActionResult.PASS;
-        });
+		});
 
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 			if (!(world instanceof ServerWorld serverWorld) || !(player instanceof ServerPlayerEntity serverPlayer) || player.getGameMode() == GameMode.SPECTATOR) return ActionResult.PASS;
