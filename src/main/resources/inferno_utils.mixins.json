@@ -3,7 +3,8 @@
   "package": "net.gooseman.inferno_utils.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "EntityMixin"
+    "EntityMixin",
+    "HungerManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -8,26 +8,26 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.gooseman.inferno_utils.config.InfernoConfig;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.Properties;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
+import net.minecraft.world.event.GameEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,15 +47,15 @@ public class InfernoUtils implements ModInitializer {
 	public List<String> probableTraps = List.of(new String[]{"bad_respawn_point", "falling_anvil", "falling_stalactite", "fireworks", "stalagmite"});
 	public List<EntityType<?>> explosionExclusion = List.of(new EntityType<?>[]{EntityType.CREEPER, EntityType.GHAST, EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.END_CRYSTAL});
 
-	public void temporaryBan(Player playerEntity, String timeKey, String reasonKey) {
+	public void temporaryBan(PlayerEntity playerEntity, String timeKey, String reasonKey) {
 		InfernoConfig.reloadConfig();
 		MinecraftServer server = playerEntity.getServer();
 		String command = null;
 		try {
 			command = String.format("tempban %s %s %s", playerEntity.getDisplayName().getString(), InfernoConfig.config.getOrDefault(timeKey, "8h"), InfernoConfig.config.getOrDefault(reasonKey, "You have died/combat logged"));
-			server.createCommandSourceStack().dispatcher().execute(command, server.createCommandSourceStack());
+			server.getCommandSource().getDispatcher().execute(command, server.getCommandSource());
 		} catch (Exception e) {
-			playerEntity.displayClientMessage(Component.nullToEmpty("An error occured, please contact the server owner"), false);
+			playerEntity.sendMessage(Text.of("An error occured, please contact the server owner"), false);
 			LOGGER.error("Couldn't tempban player!");
 			LOGGER.error("Exception Message: {}", e.getMessage());
 			if (command != null) LOGGER.error("Executed Command: {}", command);
@@ -73,59 +73,59 @@ public class InfernoUtils implements ModInitializer {
 		InfernoConfig.reloadConfig();
 
 		UseItemCallback.EVENT.register((player, world, hand) -> {
-			if (!(world instanceof ServerLevel serverWorld) || !(player instanceof ServerPlayer serverPlayer) || player.gameMode() == GameType.SPECTATOR) return InteractionResult.PASS;
+			if (!(world instanceof ServerWorld serverWorld) || !(player instanceof ServerPlayerEntity serverPlayer) || player.getGameMode() == GameMode.SPECTATOR) return ActionResult.PASS;
 
-			ItemStack heldItem = player.getItemInHand(hand);
-			if (heldItem.is(Items.FIREWORK_ROCKET))
-				return InteractionResult.FAIL;
+			ItemStack heldItem = player.getStackInHand(hand);
+			if (heldItem.isOf(Items.FIREWORK_ROCKET))
+				return ActionResult.FAIL;
 
-			return InteractionResult.PASS;
+			return ActionResult.PASS;
 		});
 
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			if (!(world instanceof ServerLevel serverWorld) || !(player instanceof ServerPlayer serverPlayer) || player.gameMode() == GameType.SPECTATOR) return InteractionResult.PASS;
+			if (!(world instanceof ServerWorld serverWorld) || !(player instanceof ServerPlayerEntity serverPlayer) || player.getGameMode() == GameMode.SPECTATOR) return ActionResult.PASS;
 
 			BlockPos blockPos = hitResult.getBlockPos();
 			BlockState blockState = world.getBlockState(blockPos);
-			ItemStack heldItem = player.getItemInHand(hand);
-			if (heldItem.is(ItemTags.HOES) && blockState.is(ModBlockTags.BlockTags.FARMABLE)) {
-				if (blockState.is(Blocks.NETHER_WART) || blockState.is(Blocks.BEETROOTS)) {
-					if (blockState.getValue(BlockStateProperties.AGE_3) != 3) return InteractionResult.PASS;
-				} else if (blockState.getValue(BlockStateProperties.AGE_7) != 7) return InteractionResult.PASS;
+			ItemStack heldItem = player.getStackInHand(hand);
+			if (heldItem.isIn(ItemTags.HOES) && blockState.isIn(ModBlockTags.BlockTags.FARMABLE)) {
+				if (blockState.isOf(Blocks.NETHER_WART) || blockState.isOf(Blocks.BEETROOTS)) {
+					if (blockState.get(Properties.AGE_3) != 3) return ActionResult.PASS;
+				} else if (blockState.get(Properties.AGE_7) != 7) return ActionResult.PASS;
 
-				heldItem.hurtAndBreak(1, player, hand);
+				heldItem.damage(1, player, hand);
 
-				Block.getDrops(blockState, serverWorld, blockPos, null, player, heldItem).forEach(stack -> Block.popResource(world, blockPos, (stack.is(Items.WHEAT) || stack.is(Items.BEETROOT) ? stack : stack.copyWithCount(stack.getCount() - 1))));
-				blockState.spawnAfterBreak(serverWorld, blockPos, heldItem, true);
+				Block.getDroppedStacks(blockState, serverWorld, blockPos, null, player, heldItem).forEach(stack -> Block.dropStack(world, blockPos, (stack.isOf(Items.WHEAT) || stack.isOf(Items.BEETROOT) ? stack : stack.copyWithCount(stack.getCount() - 1))));
+				blockState.onStacksDropped(serverWorld, blockPos, heldItem, true);
 
-				serverWorld.setBlockAndUpdate(blockPos, blockState.getBlock().defaultBlockState());
-				serverWorld.gameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
-				serverWorld.playSound(null, blockPos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS);
-				return InteractionResult.SUCCESS_SERVER;
+				serverWorld.setBlockState(blockPos, blockState.getBlock().getDefaultState());
+				serverWorld.emitGameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
+				serverWorld.playSound(null, blockPos, SoundEvents.BLOCK_CROP_BREAK, SoundCategory.BLOCKS);
+				return ActionResult.SUCCESS_SERVER;
 			}
 
-			if (heldItem.is(ItemTags.SHOVELS) && blockState.is(Blocks.DIRT_PATH)) {
-				heldItem.hurtAndBreak(1, serverPlayer, hand);
-				serverWorld.setBlockAndUpdate(blockPos, Blocks.DIRT.defaultBlockState());
-				serverWorld.playSound(null, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS);
-				return InteractionResult.SUCCESS_SERVER;
+			if (heldItem.isIn(ItemTags.SHOVELS) && blockState.isOf(Blocks.DIRT_PATH)) {
+				heldItem.damage(1, serverPlayer, hand);
+				serverWorld.setBlockState(blockPos, Blocks.DIRT.getDefaultState());
+				serverWorld.playSound(null, blockPos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS);
+				return ActionResult.SUCCESS_SERVER;
 			}
 
-			return InteractionResult.PASS;
+			return ActionResult.PASS;
 		});
 
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamageTaken, damageTaken, blocked) -> {
-			if (entity instanceof Player victim && source.getEntity() instanceof Player attacker && victim != attacker) {
-				long currentTime = entity.level().getGameTime();
-				playerCombatTracker.put(victim.getStringUUID(), currentTime);
-				playerCombatTracker.put(attacker.getStringUUID(), currentTime);
+			if (entity instanceof PlayerEntity victim && source.getAttacker() instanceof PlayerEntity attacker && victim != attacker) {
+				long currentTime = entity.getWorld().getTime();
+				playerCombatTracker.put(victim.getUuidAsString(), currentTime);
+				playerCombatTracker.put(attacker.getUuidAsString(), currentTime);
 			}
 		});
 
 		ServerPlayerEvents.LEAVE.register((player) -> {
 			InfernoConfig.reloadConfig();
-			String playerUuid = player.getStringUUID();
-			long currentTime = player.level().getGameTime();
+			String playerUuid = player.getUuidAsString();
+			long currentTime = player.getWorld().getTime();
 			Long lastCombatTime = playerCombatTracker.get(playerUuid);
 			if (lastCombatTime != null && currentTime - lastCombatTime <= InfernoConfig.config.getOrDefault("combat_length", 400)) {
 				temporaryBan(player, "combat_ban_time", "combat_ban_reason");
@@ -134,15 +134,15 @@ public class InfernoUtils implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register(((entity, damageSource) -> {
 			InfernoConfig.reloadConfig();
-			if (!(entity instanceof Player player)) return;
+			if (!(entity instanceof PlayerEntity player)) return;
 
-			String playerUuid = player.getStringUUID();
-			long currentTime = player.level().getGameTime();
+			String playerUuid = player.getUuidAsString();
+			long currentTime = player.getWorld().getTime();
 			Long lastCombatTime = playerCombatTracker.get(playerUuid);
 
-			Entity attacker = damageSource.getEntity();
-			Entity source = damageSource.getDirectEntity();
-			String deathTypeId = damageSource.typeHolder().getRegisteredName();
+			Entity attacker = damageSource.getAttacker();
+			Entity source = damageSource.getSource();
+			String deathTypeId = damageSource.getTypeRegistryEntry().getIdAsString();
 
 			if (InfernoConfig.config.getOrDefault("debug", true)) {
                 LOGGER.warn("{} died by {}", player.getDisplayName().getString(), deathTypeId);
@@ -151,7 +151,7 @@ public class InfernoUtils implements ModInitializer {
 			}
 
 			if ((lastCombatTime != null && currentTime - lastCombatTime <= InfernoConfig.config.getOrDefault("combat_length", 400)) ||
-					(attacker instanceof Player playerAttacker && playerAttacker != player)) {
+					(attacker instanceof PlayerEntity playerAttacker && playerAttacker != player)) {
 				playerCombatTracker.remove(playerUuid);
 				temporaryBan(player, "death_ban_time", "death_ban_reason");
 			} else if (probableTraps.contains(deathTypeId) ||
