@@ -72,8 +72,8 @@ public class InfernoUtils implements ModInitializer {
 
 		InfernoConfig.reloadConfig();
 
-		UseItemCallback.EVENT.register((player, world, hand) -> {
-			if (!(world instanceof ServerLevel serverWorld) || !(player instanceof ServerPlayer serverPlayer) || player.gameMode() == GameType.SPECTATOR) return InteractionResult.PASS;
+		UseItemCallback.EVENT.register((player, level, hand) -> {
+			if (!(level instanceof ServerLevel serverWorld) || !(player instanceof ServerPlayer serverPlayer) || player.gameMode() == GameType.SPECTATOR) return InteractionResult.PASS;
 
 			ItemStack heldItem = player.getItemInHand(hand);
 			if (heldItem.is(Items.FIREWORK_ROCKET))
@@ -82,32 +82,32 @@ public class InfernoUtils implements ModInitializer {
 			return InteractionResult.PASS;
 		});
 
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			if (!(world instanceof ServerLevel serverWorld) || !(player instanceof ServerPlayer serverPlayer) || player.gameMode() == GameType.SPECTATOR) return InteractionResult.PASS;
+		UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
+			if (!(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer) || player.gameMode() == GameType.SPECTATOR) return InteractionResult.PASS;
 
 			BlockPos blockPos = hitResult.getBlockPos();
-			BlockState blockState = world.getBlockState(blockPos);
+			BlockState blockState = level.getBlockState(blockPos);
 			ItemStack heldItem = player.getItemInHand(hand);
-			if (heldItem.is(ItemTags.HOES) && blockState.is(ModBlockTags.BlockTags.FARMABLE)) {
+			if (heldItem.is(ItemTags.HOES) && blockState.is(ModBlockTags.FARMABLE)) {
 				if (blockState.is(Blocks.NETHER_WART) || blockState.is(Blocks.BEETROOTS)) {
 					if (blockState.getValue(BlockStateProperties.AGE_3) != 3) return InteractionResult.PASS;
 				} else if (blockState.getValue(BlockStateProperties.AGE_7) != 7) return InteractionResult.PASS;
 
 				heldItem.hurtAndBreak(1, player, hand);
 
-				Block.getDrops(blockState, serverWorld, blockPos, null, player, heldItem).forEach(stack -> Block.popResource(world, blockPos, (stack.is(Items.WHEAT) || stack.is(Items.BEETROOT) ? stack : stack.copyWithCount(stack.getCount() - 1))));
-				blockState.spawnAfterBreak(serverWorld, blockPos, heldItem, true);
+				Block.getDrops(blockState, serverLevel, blockPos, null, player, heldItem).forEach(stack -> Block.popResource(level, blockPos, (stack.is(Items.WHEAT) || stack.is(Items.BEETROOT) ? stack : stack.copyWithCount(stack.getCount() - 1))));
+				blockState.spawnAfterBreak(serverLevel, blockPos, heldItem, true);
 
-				serverWorld.setBlockAndUpdate(blockPos, blockState.getBlock().defaultBlockState());
-				serverWorld.gameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
-				serverWorld.playSound(null, blockPos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS);
+				serverLevel.setBlockAndUpdate(blockPos, blockState.getBlock().defaultBlockState());
+				serverLevel.gameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
+				serverLevel.playSound(null, blockPos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS);
 				return InteractionResult.SUCCESS_SERVER;
 			}
 
 			if (heldItem.is(ItemTags.SHOVELS) && blockState.is(Blocks.DIRT_PATH)) {
 				heldItem.hurtAndBreak(1, serverPlayer, hand);
-				serverWorld.setBlockAndUpdate(blockPos, Blocks.DIRT.defaultBlockState());
-				serverWorld.playSound(null, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS);
+				serverLevel.setBlockAndUpdate(blockPos, Blocks.DIRT.defaultBlockState());
+				serverLevel.playSound(null, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS);
 				return InteractionResult.SUCCESS_SERVER;
 			}
 

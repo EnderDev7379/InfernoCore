@@ -14,20 +14,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
-    @Shadow public abstract Vec3 getRotationVec(float tickProgress);
+    @Shadow public abstract Vec3 getForward();
 
-    @Shadow public abstract void setVelocity(double x, double y, double z);
+    @Shadow public abstract void setDeltaMovement(double d, double e, double f);
 
-    @Shadow public boolean velocityModified;
+    @Shadow public boolean hurtMarked;
 
-    @Inject(method="tickPortalTeleportation", at= @At(value = "INVOKE", target = "net/minecraft/entity/Entity.teleportTo (Lnet/minecraft/world/TeleportTarget;)Lnet/minecraft/entity/Entity;"), cancellable = true)
+    @Inject(method="handlePortal", at= @At(value = "INVOKE", target = "net/minecraft/world/entity/Entity.teleport (Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/world/entity/Entity;"), cancellable = true)
     private void preventEndTeleportation(CallbackInfo callbackInfo, @Local TeleportTransition target) {
         InfernoConfig.reloadConfig();
         if (target.newLevel().dimension() == Level.END && InfernoConfig.config.getOrDefault("end_portal_disabled", true)) {
-            Vec3 backwards = this.getRotationVec(1.0F).scale(-1);
-            Vec3 velocity = new Vec3(backwards.x, 1, backwards.z);
-            this.setVelocity(velocity.x, velocity.y, velocity.z);
-            this.velocityModified = true;
+            Vec3 backwards = this.getForward().scale(-1);
+            this.setDeltaMovement(backwards.x, 1, backwards.z);
+            this.hurtMarked = true;
             callbackInfo.cancel();
         }
     }
