@@ -28,6 +28,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -112,7 +113,7 @@ public class InfernoUtils implements ModInitializer {
 				return InteractionResult.SUCCESS_SERVER;
 			}
 
-			if (heldItem.is(ItemTags.SHOVELS) && blockState.is(Blocks.DIRT_PATH)) {
+			if (heldItem.is(ItemTags.SHOVELS) && (blockState.is(Blocks.DIRT_PATH) || blockState.is(Blocks.FARMLAND))) {
 				heldItem.hurtAndBreak(1, serverPlayer, hand);
 				serverLevel.setBlockAndUpdate(blockPos, Blocks.DIRT.defaultBlockState());
 				serverLevel.playSound(null, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS);
