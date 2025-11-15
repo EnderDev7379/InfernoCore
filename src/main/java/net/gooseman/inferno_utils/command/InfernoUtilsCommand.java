@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 public class InfernoUtilsCommand {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((commandDispatcher, commandBuildContext, commandSelection) -> {
-            LiteralCommandNode<CommandSourceStack> rootNode = Commands.literal("infernoutils").build();
+            LiteralCommandNode<CommandSourceStack> rootNode = Commands.literal(InfernoUtils.MOD_ID).build();
 
             LiteralCommandNode<CommandSourceStack> versionNode = Commands.literal("version").executes(InfernoUtilsCommand::getVersion).build();
 
