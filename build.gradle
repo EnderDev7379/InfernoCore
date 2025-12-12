@@ -16,6 +16,18 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+
+	maven {
+		name = "Ladysnake Mods"
+		url = 'https://maven.ladysnake.org/releases'
+	}
+
+	maven {
+		name = "Nucleoid"
+		url = "https://maven.nucleoid.xyz/"
+	}
+
+	maven { url 'https://www.jitpack.io' }
 }
 
 loom {
@@ -37,6 +49,28 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Cardinal Components API
+	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
+	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-item:${project.cca_version}"
+	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-block:${project.cca_version}"
+	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+
+	// Cardinal Component API JiJ
+	include "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
+	include "org.ladysnake.cardinal-components-api:cardinal-components-item:${project.cca_version}"
+	include "org.ladysnake.cardinal-components-api:cardinal-components-block:${project.cca_version}"
+	include "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+
+	// Patbox Banhammer & Deps
+	modImplementation 'com.github.Patbox:BanHammer:1.21.6-SNAPSHOT'
+	modImplementation 'me.lucko:fabric-permissions-api:0.4.0'
+	modImplementation "eu.pb4:placeholder-api:2.7.2+1.21.8"
+	implementation 'com.mysql:mysql-connector-j:9.3.0'
+	implementation "org.xerial:sqlite-jdbc:3.50.3.0"
+	implementation 'org.postgresql:postgresql:42.7.7'
+
+	implementation "net.java.dev.jna:jna:5.18.1"
 }
 
 processResources {

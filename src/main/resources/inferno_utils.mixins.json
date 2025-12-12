@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "EntityMixin",
-    "FarmBlockMixin"
+    "FarmBlockMixin",
+    "FoodDataMixin"
   ],
   "injectors": {
     "defaultRequire": 1
