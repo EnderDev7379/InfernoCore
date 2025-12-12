@@ -31,7 +31,7 @@ public class InfernoUtilsClient implements ClientModInitializer {
         if (minecraft.player == null) return;
         PlayerManaHolderComponent manaHolder = (PlayerManaHolderComponent) ManaHolderComponent.KEY.get(minecraft.player);
         PlayerMana mana = manaHolder.get();
-        if (mana.getManaLimit() == 0) return;
+        if (!mana.shouldRender) return;
         int xOrigin = guiGraphics.guiWidth() / 2 + 91;
         int yOrigin = guiGraphics.guiHeight() - 59;
 
@@ -41,6 +41,6 @@ public class InfernoUtilsClient implements ClientModInitializer {
 //        LOGGER.info("Current mana: {}\nMana Limit: {}", mana.getMana(), mana.getManaLimit());
         guiGraphics.fillGradient(xOrigin - 81, yOrigin, (int) (xOrigin - 81 + 81 * Math.clamp(mana.getMana() / mana.getManaLimit(), 0f, 1f)), yOrigin + 9, 0xFFAA00FF, 0xFF0055CC);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MANA_BAR_BACKGROUND, xOrigin - 81, yOrigin, 81, 9);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MANA_BAR_PROGRESS, 90, 9, 0, 0, xOrigin - 81, yOrigin, (int) (81 * mana.getMana() / mana.getManaLimit()), 9);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MANA_BAR_PROGRESS, 81, 9, 0, 0, xOrigin - 81, yOrigin, (int) (81 * Math.clamp(mana.getMana() / mana.getManaLimit(), 0f, 1f)), 9);
     }
 }

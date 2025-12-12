@@ -29,7 +29,7 @@ public class BaseManaHolderComponent implements ManaHolderComponent {
     @Override
     public void writeData(ValueOutput writeView) {
         writeView.putFloat("underflow_limit", mana.getUnderflowLimit());
-        writeView.putFloat("underflow_limit", mana.getOverflowLimit());
+        writeView.putFloat("overflow_limit", mana.getOverflowLimit());
         writeView.putFloat("mana_limit", mana.getManaLimit());
         writeView.putFloat("mana", mana.getMana());
     }
