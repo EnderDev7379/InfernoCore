@@ -72,6 +72,7 @@ dependencies {
 
 	// temp deps
 	implementation "org.mvel:mvel2:2.5.2.Final"
+	include "org.mvel:mvel2:2.5.2.Final"
 }
 
 processResources {

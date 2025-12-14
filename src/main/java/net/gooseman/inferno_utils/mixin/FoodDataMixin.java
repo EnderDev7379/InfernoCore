@@ -12,6 +12,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class FoodDataMixin {
 	@ModifyVariable(method = "tick", at = @At(value = "STORE"))
 	private boolean modifyShouldRegen(boolean shouldRegen, ServerPlayer player) {
-		return shouldRegen && !RoleHolderComponent.KEY.get(player).get().is(RoleType.MEPHISTO);
+		return shouldRegen && !RoleHolderComponent.KEY.get(player).get().getId().equals("mephisto");
 	}
 }
