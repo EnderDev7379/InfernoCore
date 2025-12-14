@@ -26,10 +26,12 @@ public class MephistoMana extends PlayerMana {
     AttributeInstance maxHealthAttribute;
     AttributeInstance jumpAttribute;
     AttributeInstance safeFallAttribute;
+    AttributeInstance speedAttribute;
 
     ModifiableAttributeModifier maxHealthModifier = new ModifiableAttributeModifier(mephstioId, 0, AttributeModifier.Operation.ADD_VALUE);
     ModifiableAttributeModifier jumpModifier = new ModifiableAttributeModifier(mephstioId, 0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     ModifiableAttributeModifier safeFallModifier = new ModifiableAttributeModifier(mephstioId, 0, AttributeModifier.Operation.ADD_VALUE);
+    ModifiableAttributeModifier speedModifier = new ModifiableAttributeModifier(mephstioId, 0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public MephistoMana(Player player) { this(player, 0, 0, 100, 100); }
 
@@ -44,10 +46,12 @@ public class MephistoMana extends PlayerMana {
         maxHealthAttribute = player.getAttribute(Attributes.MAX_HEALTH);
         jumpAttribute = player.getAttribute(Attributes.JUMP_STRENGTH);
         safeFallAttribute = player.getAttribute(Attributes.SAFE_FALL_DISTANCE);
+        speedAttribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
         maxHealthAttribute.addTransientModifier(maxHealthModifier.toModifier());
         jumpAttribute.addTransientModifier(jumpModifier.toModifier());
         safeFallAttribute.addTransientModifier(safeFallModifier.toModifier());
+        speedAttribute.addTransientModifier(speedModifier.toModifier());
         shouldRender = true;
     }
 
@@ -86,6 +90,7 @@ public class MephistoMana extends PlayerMana {
             LOGGER.warn("Calculated jumpModifier");
             safeFallModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_safeFall", "heightMult - 1"), varMap));
             LOGGER.warn("Calculated safeFallModifier");
+            speedModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_moveSpeed", "0"), varMap));
 
             maxHealthAttribute.addOrUpdateTransientModifier(maxHealthModifier.toModifier());
             jumpAttribute.addOrUpdateTransientModifier(jumpModifier.toModifier());
