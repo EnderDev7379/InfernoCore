@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static net.gooseman.inferno_utils.InfernoUtils.LOGGER;
-import static net.gooseman.inferno_utils.InfernoUtils.temporaryBan;
+import static net.gooseman.inferno_utils.utils.BanhammerUtils.temporaryBan;
 import static net.gooseman.inferno_utils.InfernoUtils.playerCombatTracker;
 import static net.gooseman.inferno_utils.InfernoUtils.combatBossEvents;
 import static net.gooseman.inferno_utils.InfernoUtils.playerCombatBossEvents;

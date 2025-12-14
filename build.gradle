@@ -63,14 +63,15 @@ dependencies {
 	include "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 
 	// Patbox Banhammer & Deps
-	modImplementation 'com.github.Patbox:BanHammer:1.21.6-SNAPSHOT'
-	modImplementation 'me.lucko:fabric-permissions-api:0.4.0'
-	modImplementation "eu.pb4:placeholder-api:2.7.2+1.21.8"
-	implementation 'com.mysql:mysql-connector-j:9.3.0'
-	implementation "org.xerial:sqlite-jdbc:3.50.3.0"
-	implementation 'org.postgresql:postgresql:42.7.7'
+	modCompileOnly 'com.github.Patbox:BanHammer:1.21.6-SNAPSHOT'
+	modCompileOnly 'me.lucko:fabric-permissions-api:0.4.0'
+	modCompileOnly "eu.pb4:placeholder-api:2.7.2+1.21.8"
+	compileOnly 'com.mysql:mysql-connector-j:9.3.0'
+	compileOnly "org.xerial:sqlite-jdbc:3.50.3.0"
+	compileOnly 'org.postgresql:postgresql:42.7.7'
 
-	implementation "net.java.dev.jna:jna:5.18.1"
+	// temp deps
+	implementation "org.mvel:mvel2:2.5.2.Final"
 }
 
 processResources {

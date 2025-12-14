@@ -1,17 +1,13 @@
 package net.gooseman.inferno_utils;
 
-import eu.pb4.banhammer.api.BanHammer;
-import eu.pb4.banhammer.api.PunishmentData;
-import eu.pb4.banhammer.api.PunishmentType;
-import eu.pb4.banhammer.impl.BHUtils;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.gooseman.inferno_utils.command.InfernoUtilsCommand;
 import net.gooseman.inferno_utils.command.RoleCommand;
 import net.gooseman.inferno_utils.config.InfernoConfig;
 import net.gooseman.inferno_utils.role.RoleType;
 import net.minecraft.server.level.ServerBossEvent;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
@@ -37,22 +33,6 @@ public class InfernoUtils implements ModInitializer {
 	public static HashMap<UUID, ServerBossEvent> combatBossEvents = new HashMap<>();
 	public static HashMap<UUID, UUID> playerCombatBossEvents = new HashMap<>();
 
-	public static void temporaryBan(ServerPlayer player, String timeKey, String reasonKey) {
-		InfernoConfig.reloadConfig();
-
-		BanHammer.punish(PunishmentData.create(
-				player,
-				player.getServer().createCommandSourceStack(),
-				InfernoConfig.config.getOrDefault(reasonKey, "You have died/combat logged"),
-				BHUtils.parseDuration(InfernoConfig.config.getOrDefault(timeKey, "8h")),
-				PunishmentType.BAN
-		), true);
-	}
-
-	public static boolean isMephisto(Class<? extends Player> container) {
-		return isMephisto(container.cast(Player.class));
-	}
-
 	public static boolean isMephisto(Player player) {
 		return player.getDisplayName().getString().equals(InfernoConfig.config.getOrDefault("mephisto", "nobodyig"));
 	}
@@ -63,6 +43,8 @@ public class InfernoUtils implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 		RoleType.register();
+
+		if (!FabricLoader.getInstance().isModLoaded("banhammer")) LOGGER.warn("Banhammer is not installed! Some features will not function properly.");
 
 		probableTraps = probableTraps.stream().map((str) -> "minecraft:"+str).toList();
 
