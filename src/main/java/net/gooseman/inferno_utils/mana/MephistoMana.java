@@ -80,21 +80,18 @@ public class MephistoMana extends PlayerMana {
 //            maxHealthModifier.amount = mana / 5;
 //            jumpModifier.amount = sqrt(heightMult) - 1;
 //            safeFallModifier.amount = heightMult - 1;
-            LOGGER.warn("Started doing math");
             double heightMult = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_heightMult", "1 + Math.max(0, mana) / 40"), varMap));
-            LOGGER.warn("Calculated heightMult");
             varMap.put("heightMult", heightMult);
+
             maxHealthModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_maxHealth", "mana / 5"), varMap));
-            LOGGER.warn("Calculated maxHealthModifier");
             jumpModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_jumpForce", "Math.sqrt(heightMult) - 1"), varMap));
-            LOGGER.warn("Calculated jumpModifier");
             safeFallModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_safeFall", "heightMult - 1"), varMap));
-            LOGGER.warn("Calculated safeFallModifier");
             speedModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_moveSpeed", "0"), varMap));
 
             maxHealthAttribute.addOrUpdateTransientModifier(maxHealthModifier.toModifier());
             jumpAttribute.addOrUpdateTransientModifier(jumpModifier.toModifier());
             safeFallAttribute.addOrUpdateTransientModifier(safeFallModifier.toModifier());
+            speedAttribute.addOrUpdateTransientModifier(speedModifier.toModifier());
         }
         ManaHolderComponent.KEY.sync(player);
     }
@@ -104,6 +101,7 @@ public class MephistoMana extends PlayerMana {
         maxHealthAttribute.removeModifier(mephstioId);
         jumpAttribute.removeModifier(mephstioId);
         safeFallAttribute.removeModifier(mephstioId);
+        speedAttribute.removeModifier(mephstioId);
     }
 
     @Override
