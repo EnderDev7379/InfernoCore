@@ -5,7 +5,9 @@
   "mixins": [
     "EntityMixin",
     "FarmBlockMixin",
-    "FoodDataMixin"
+    "FoodDataMixin",
+    "HealOrHarmEffectMixin",
+    "RegenerationEffectMixin"
   ],
   "injectors": {
     "defaultRequire": 1
