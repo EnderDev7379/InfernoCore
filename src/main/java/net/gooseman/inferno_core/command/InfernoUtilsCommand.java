@@ -23,7 +23,7 @@ import java.util.UUID;
 public class InfernoUtilsCommand {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((commandDispatcher, commandBuildContext, commandSelection) -> {
-            LiteralCommandNode<CommandSourceStack> rootNode = Commands.literal(InfernoCore.MOD_ID).build();
+            LiteralCommandNode<CommandSourceStack> rootNode = Commands.literal(InfernoCore.MOD_ID).requires(Commands.hasPermission(3)).build();
 
             LiteralCommandNode<CommandSourceStack> versionNode = Commands.literal("version").executes(InfernoUtilsCommand::getVersion).build();
 
