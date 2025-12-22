@@ -11,7 +11,7 @@
 		"sources": "https://github.com/EnderDev7379/InfernoUtils",
 		"issues": "https://github.com/EnderDev7379/InfernoUtils/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/inferno_core/icon.png",
 	"environment": "*",
 	"entrypoints": {
