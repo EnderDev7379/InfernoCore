@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "inferno_utils",
+	"id": "inferno_core",
 	"version": "${version}",
-	"name": "Inferno Utils",
+	"name": "Inferno Core",
 	"description": "The custom mod for the Mephisto's Inferno SMP.",
 	"authors": [
 		"EnderDev7379"
@@ -12,26 +12,30 @@
 		"issues": "https://github.com/EnderDev7379/InfernoUtils/issues"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/inferno_utils/icon.png",
+	"icon": "assets/inferno_core/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.gooseman.inferno_utils.InfernoUtils"
+			"net.gooseman.inferno_core.InfernoCore"
 		],
 		"client": [
-			"net.gooseman.inferno_utils.InfernoUtilsClient"
+			"net.gooseman.inferno_core.InfernoCoreClient"
 		],
 		"cardinal-components": [
-			"net.gooseman.inferno_utils.component.ComponentInitializer"
+			"net.gooseman.inferno_core.component.ComponentInitializer"
 		]
 	},
 	"mixins": [
-		"inferno_utils.mixins.json"
+		"inferno_core.mixins.json",
+		{
+			"config": "inferno_core.client.mixins.json",
+			"environment": "client"
+		}
 	],
 	"custom": {
 		"cardinal-components": [
-			"inferno_utils:mana_holder",
-			"inferno_utils:role_holder"
+			"inferno_core:mana_holder",
+			"inferno_core:role_holder"
 		]
 	},
 	"depends": {

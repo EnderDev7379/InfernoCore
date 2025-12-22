@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.gooseman.inferno_core.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "mixinextras": {"minVersion": "0.5.0"},
+  "client": [
+    "LocalPlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

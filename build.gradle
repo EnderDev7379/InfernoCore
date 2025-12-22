@@ -34,7 +34,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"inferno_utils" {
+		"inferno_core" {
 			sourceSet sourceSets.main
 		}
 	}
