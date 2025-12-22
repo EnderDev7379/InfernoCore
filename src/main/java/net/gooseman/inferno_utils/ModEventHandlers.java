@@ -75,14 +75,14 @@ public class ModEventHandlers {
                 serverLevel.setBlockAndUpdate(blockPos, blockState.getBlock().defaultBlockState());
                 serverLevel.gameEvent(player, GameEvent.BLOCK_DESTROY, blockPos);
                 serverLevel.playSound(null, blockPos, SoundEvents.CROP_BREAK, SoundSource.BLOCKS);
-                return InteractionResult.SUCCESS_SERVER;
+                return InteractionResult.SUCCESS;
             }
 
             if (heldItem.is(ItemTags.SHOVELS) && (blockState.is(Blocks.DIRT_PATH) || blockState.is(Blocks.FARMLAND))) {
                 heldItem.hurtAndBreak(1, serverPlayer, hand);
                 serverLevel.setBlockAndUpdate(blockPos, Blocks.DIRT.defaultBlockState());
                 serverLevel.playSound(null, blockPos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS);
-                return InteractionResult.SUCCESS_SERVER;
+                return InteractionResult.SUCCESS;
             }
 
             return InteractionResult.PASS;
