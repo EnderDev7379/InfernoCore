@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "net.gooseman.inferno_core.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EntityMixin",
+    "FarmBlockMixin",
+    "FoodDataMixin",
+    "HealOrHarmEffectMixin",
+    "RegenerationEffectMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+	}
+}

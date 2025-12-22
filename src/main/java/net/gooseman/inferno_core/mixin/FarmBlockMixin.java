@@ -1,7 +1,6 @@
-package net.gooseman.inferno_utils.mixin;
+package net.gooseman.inferno_core.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.gooseman.inferno_utils.InfernoUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;

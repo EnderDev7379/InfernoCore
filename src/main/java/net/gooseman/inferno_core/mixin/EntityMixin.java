@@ -1,7 +1,7 @@
-package net.gooseman.inferno_utils.mixin;
+package net.gooseman.inferno_core.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.gooseman.inferno_utils.config.InfernoConfig;
+import net.gooseman.inferno_core.config.InfernoConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;

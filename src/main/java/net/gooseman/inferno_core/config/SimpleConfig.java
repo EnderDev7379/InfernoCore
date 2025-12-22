@@ -1,4 +1,4 @@
-package net.gooseman.inferno_utils.config;
+package net.gooseman.inferno_core.config;
 /*
  * Copyright (c) 2021 magistermaks
  *

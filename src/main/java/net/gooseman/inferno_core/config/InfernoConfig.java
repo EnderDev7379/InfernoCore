@@ -1,5 +1,7 @@
-package net.gooseman.inferno_utils.config;
+package net.gooseman.inferno_core.config;
 
+
+import static net.gooseman.inferno_core.InfernoCore.MOD_ID;
 
 public class InfernoConfig {
     public static String provider(String namespace) {
@@ -28,7 +30,7 @@ public class InfernoConfig {
                 end_portal_disabled=true
                 """;
     }
-    public static SimpleConfig.ConfigRequest configRequest = SimpleConfig.of("inferno_utils-config").provider(InfernoConfig::provider);
+    public static SimpleConfig.ConfigRequest configRequest = SimpleConfig.of(MOD_ID + "-config").provider(InfernoConfig::provider);
     public static SimpleConfig config = configRequest.request();
 
     public static void reloadConfig() {

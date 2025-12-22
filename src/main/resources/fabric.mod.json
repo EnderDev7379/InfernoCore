@@ -1,32 +1,50 @@
 {
 	"schemaVersion": 1,
-	"id": "inferno_utils",
+	"id": "inferno_core",
 	"version": "${version}",
-	"name": "Inferno Utils",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Inferno Core",
+	"description": "The custom mod for the Mephisto's Inferno SMP.",
 	"authors": [
 		"EnderDev7379"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/EnderDev7379/InfernoUtils",
+		"issues": "https://github.com/EnderDev7379/InfernoUtils/issues"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/inferno_utils/icon.png",
-	"environment": "server",
+	"license": "MIT",
+	"icon": "assets/inferno_core/icon.png",
+	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.gooseman.inferno_utils.InfernoUtils"
+			"net.gooseman.inferno_core.InfernoCore"
+		],
+		"client": [
+			"net.gooseman.inferno_core.InfernoCoreClient"
+		],
+		"cardinal-components": [
+			"net.gooseman.inferno_core.component.ComponentInitializer"
 		]
 	},
 	"mixins": [
-		"inferno_utils.mixins.json"
+		"inferno_core.mixins.json",
+		{
+			"config": "inferno_core.client.mixins.json",
+			"environment": "client"
+		}
 	],
+	"custom": {
+		"cardinal-components": [
+			"inferno_core:mana_holder",
+			"inferno_core:role_holder"
+		]
+	},
 	"depends": {
 		"fabricloader": ">=0.17.2",
 		"minecraft": "~1.21.8",
 		"java": ">=21",
-		"fabric-api": "*",
+		"fabric-api": "*"
+	},
+	"recommends": {
 		"banhammer": ">=0.14.1"
 	}
 }
