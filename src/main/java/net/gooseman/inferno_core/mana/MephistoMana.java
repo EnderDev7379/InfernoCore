@@ -83,10 +83,10 @@ public class MephistoMana extends PlayerMana {
             varMap.put("heightMult", heightMult);
 
             double prevAmount = maxHealthModifier.amount;
-            maxHealthModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_maxHealth", "mana / 5"), varMap));
-            jumpModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_jumpForce", "Math.sqrt(heightMult) - 1"), varMap));
-            safeFallModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_safeFall", "heightMult - 1"), varMap));
-            speedModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_moveSpeed", "0"), varMap));
+            maxHealthModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_healthExp", "mana / 5"), varMap));
+            jumpModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_jumpExp", "Math.sqrt(heightMult) - 1"), varMap));
+            safeFallModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_fallExp", "heightMult - 1"), varMap));
+            speedModifier.amount = Double.parseDouble(MVEL.evalToString(InfernoConfig.config.getOrDefault("onTick_speedExp", "mana / 200"), varMap));
 
             preventDamageTilt = maxHealthModifier.amount < prevAmount;
             maxHealthAttribute.addOrUpdateTransientModifier(maxHealthModifier.toModifier());
@@ -110,7 +110,7 @@ public class MephistoMana extends PlayerMana {
     public <T> T getEventHandler(Class<T> functionalInterface) {
         if (functionalInterface.equals(AfterDamage.class)) {
             return (T) (AfterDamage) (LivingEntity entity, DamageSource source, float baseDamageTaken, float damageTaken, boolean blocked) -> {
-                if (!(source.getEntity() instanceof Player attacker) || !attacker.equals(this.player)) return;
+                if (!(source.getEntity() instanceof Player attacker) || !attacker.equals(this.player) || !(entity instanceof Player victim)) return;
                 Map<String, Object> varMap = Map.of(
                         "mana", mana,
                         "manaLimit", manaLimit,
@@ -121,7 +121,7 @@ public class MephistoMana extends PlayerMana {
                         "blocked", blocked);
                 setMana(mana + damageTaken * 2.5f);
                 setMana(Float.parseFloat(MVEL.evalToString(InfernoConfig.config.getOrDefault("onDamage_manaExp", "mana + damage * 2.5"), varMap)));
-                attacker.heal(Float.parseFloat(MVEL.evalToString(InfernoConfig.config.getOrDefault("onDamage_healExp", "damage"), varMap)));
+                attacker.heal(Float.parseFloat(MVEL.evalToString(InfernoConfig.config.getOrDefault("onDamage_healExp", "damage / 3"), varMap)));
             };
         } else if (functionalInterface.equals(AfterDeath.class)) {
             return (T) (AfterDeath) (LivingEntity entity, DamageSource source) -> {
