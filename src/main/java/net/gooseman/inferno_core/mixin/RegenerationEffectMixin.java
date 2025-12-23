@@ -4,6 +4,7 @@ import net.gooseman.inferno_core.component.role.RoleHolderComponent;
 import net.gooseman.inferno_core.config.InfernoConfig;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,7 +16,8 @@ import static net.gooseman.inferno_core.InfernoCore.playerCombatTracker;
 public class RegenerationEffectMixin {
     @Inject(method="applyEffectTick", at = @At(value = "HEAD"), cancellable = true)
     private void applyEffectTickFiltered(ServerLevel serverLevel, LivingEntity livingEntity, int i, CallbackInfoReturnable<Boolean> cir) {
-        if (RoleHolderComponent.KEY.get(livingEntity).get().getId().equals("mephisto") &&
+        if (livingEntity instanceof Player player &&
+                RoleHolderComponent.KEY.get(player).get().getId().equals("mephisto") &&
                 livingEntity.level().getGameTime() - playerCombatTracker.getOrDefault(livingEntity.getStringUUID(), 0L) <= InfernoConfig.config.getOrDefault("combat_length", 400)) {
             cir.setReturnValue(false);
             cir.cancel();
