@@ -5,7 +5,8 @@
 	"name": "Inferno Core",
 	"description": "The custom mod for the Mephisto's Inferno SMP.",
 	"authors": [
-		"EnderDev7379"
+		"EnderDev7379",
+		"FeatherLux"
 	],
 	"contact": {
 		"sources": "https://github.com/EnderDev7379/InfernoUtils",

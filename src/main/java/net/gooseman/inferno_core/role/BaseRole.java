@@ -35,10 +35,5 @@ public class BaseRole implements Role {
     }
 
     @Override
-    public boolean is(RoleType<? extends Role> roleType) {
-        return ModRegistries.ROLE.getKey(roleType).toString().equals(getId());
-    }
-
-    @Override
     public void reset() {}
 }

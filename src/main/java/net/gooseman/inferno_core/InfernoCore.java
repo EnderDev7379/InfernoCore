@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.gooseman.inferno_core.command.InfernoUtilsCommand;
 import net.gooseman.inferno_core.command.RoleCommand;
+import net.gooseman.inferno_core.command.RoleUtilsCommand;
 import net.gooseman.inferno_core.config.InfernoConfig;
 import net.gooseman.inferno_core.role.RoleType;
 import net.minecraft.server.level.ServerBossEvent;
@@ -47,6 +48,7 @@ public class InfernoCore implements ModInitializer {
 
 		InfernoUtilsCommand.register();
 		RoleCommand.register();
+		RoleUtilsCommand.register();
 
 		ModEventHandlers.register();
 		ModDynamicEventHandlers.register();

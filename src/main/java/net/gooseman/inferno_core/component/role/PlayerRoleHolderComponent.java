@@ -52,11 +52,13 @@ public class PlayerRoleHolderComponent implements RoleHolderComponent {
     @Override
     public void readData(ValueInput readView) {
         this.role = ModRegistries.ROLE.get(ResourceLocation.parse(readView.getStringOr("role_id", MOD_ID + ":base"))).orElseThrow().value().create(player);
+        get().readAdditional(readView);
     }
 
     @Override
     public void writeData(ValueOutput writeView) {
         writeView.putString("role_id", InfernoCore.MOD_ID + ":" + role.getId());
+        get().writeAdditional(writeView);
     }
 
     @Override
