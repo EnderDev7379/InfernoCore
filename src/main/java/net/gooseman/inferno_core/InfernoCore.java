@@ -2,6 +2,7 @@ package net.gooseman.inferno_core;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.gooseman.inferno_core.command.InfernoUtilsCommand;
 import net.gooseman.inferno_core.command.RoleCommand;
