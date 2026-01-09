@@ -6,9 +6,10 @@
     "EntityMixin",
     "FarmBlockMixin",
     "FoodDataMixin",
+    "GameProfileMixin",
     "HealOrHarmEffectMixin",
-    "PlayerMixin",
-    "RegenerationEffectMixin"
+    "RegenerationEffectMixin",
+    "StringReaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
