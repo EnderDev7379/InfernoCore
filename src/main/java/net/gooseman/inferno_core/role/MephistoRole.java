@@ -2,15 +2,27 @@ package net.gooseman.inferno_core.role;
 
 import net.gooseman.inferno_core.mana.MephistoMana;
 import net.gooseman.inferno_core.mana.PlayerMana;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+import java.util.List;
+
 public class MephistoRole extends BaseRole {
     public boolean mephistoMode = true;
 
-    public MephistoRole(Player player) {
+    public MephistoRole(ServerPlayer player) {
         super(player);
+        if (mephistoMode) {
+            assert player.getServer() != null;
+            PlayerList playerList = player.getServer().getPlayerList();
+            playerList.broadcastAll(new ClientboundPlayerInfoRemovePacket(List.of(player.getUUID())));
+            playerList.broadcastAll(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(player)));
+        }
     }
 
     @Override
@@ -31,5 +43,16 @@ public class MephistoRole extends BaseRole {
     @Override
     public void writeAdditional(ValueOutput writeView) {
         writeView.putBoolean("mephistoMode", mephistoMode);
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        if (mephistoMode) {
+            assert player.getServer() != null;
+            PlayerList playerList = player.getServer().getPlayerList();
+            playerList.broadcastAll(new ClientboundPlayerInfoRemovePacket(List.of(player.getUUID())));
+            playerList.broadcastAll(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(player)));
+        }
     }
 }
