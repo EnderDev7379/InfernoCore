@@ -14,6 +14,6 @@ public class ComponentInitializer implements EntityComponentInitializer {
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
         registry.beginRegistration(ServerPlayer.class, RoleHolderComponent.KEY).respawnStrategy(RespawnCopyStrategy.ALWAYS_COPY).impl(PlayerRoleHolderComponent.class).end(PlayerRoleHolderComponent::new);
-        registry.beginRegistration(Player.class, ManaHolderComponent.KEY).respawnStrategy(RespawnCopyStrategy.CHARACTER).after(RoleHolderComponent.KEY).impl(PlayerManaHolderComponent.class).end(PlayerManaHolderComponent::new);
+        registry.beginRegistration(ServerPlayer.class, ManaHolderComponent.KEY).respawnStrategy(RespawnCopyStrategy.CHARACTER).after(RoleHolderComponent.KEY).impl(PlayerManaHolderComponent.class).end(PlayerManaHolderComponent::new);
     }
 }

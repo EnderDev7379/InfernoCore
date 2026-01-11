@@ -8,9 +8,9 @@ import net.minecraft.world.entity.player.Player;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 public class PlayerManaHolderComponent extends BaseManaHolderComponent implements AutoSyncedComponent {
-    Player player;
+    ServerPlayer player;
 
-    public PlayerManaHolderComponent(Player player) {
+    public PlayerManaHolderComponent(ServerPlayer player) {
         this.player = player;
         mana = new PlayerMana(player);
     }

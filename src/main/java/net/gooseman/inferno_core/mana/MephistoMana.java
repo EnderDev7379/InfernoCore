@@ -6,6 +6,7 @@ import net.gooseman.inferno_core.component.mana.ManaHolderComponent;
 import net.gooseman.inferno_core.config.InfernoConfig;
 import net.gooseman.inferno_core.utils.ModifiableAttributeModifier;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -32,15 +33,15 @@ public class MephistoMana extends PlayerMana {
     ModifiableAttributeModifier safeFallModifier = new ModifiableAttributeModifier(mephstioId, 0, AttributeModifier.Operation.ADD_VALUE);
     ModifiableAttributeModifier speedModifier = new ModifiableAttributeModifier(mephstioId, 0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
-    public MephistoMana(Player player) { this(player, 0, 0, 100, 100); }
+    public MephistoMana(ServerPlayer player) { this(player, 0, 0, 100, 100); }
 
-    public MephistoMana(Player player, float mana) { this(player, mana, 0, 100, 100); }
+    public MephistoMana(ServerPlayer player, float mana) { this(player, mana, 0, 100, 100); }
 
-    public MephistoMana(Player player, float mana, float manaLimit) { this(player, mana, 0, manaLimit, manaLimit); }
+    public MephistoMana(ServerPlayer player, float mana, float manaLimit) { this(player, mana, 0, manaLimit, manaLimit); }
 
-    public MephistoMana(Player player, float mana, float manaLimit, float overflowLimit) { this(player, mana, 0, manaLimit, overflowLimit); }
+    public MephistoMana(ServerPlayer player, float mana, float manaLimit, float overflowLimit) { this(player, mana, 0, manaLimit, overflowLimit); }
 
-    public MephistoMana(Player player, float mana, float underflowLimit, float manaLimit, float overflowLimit) {
+    public MephistoMana(ServerPlayer player, float mana, float underflowLimit, float manaLimit, float overflowLimit) {
         super(player, mana, underflowLimit, manaLimit, overflowLimit);
         maxHealthAttribute = player.getAttribute(Attributes.MAX_HEALTH);
         jumpAttribute = player.getAttribute(Attributes.JUMP_STRENGTH);
@@ -110,7 +111,7 @@ public class MephistoMana extends PlayerMana {
     public <T> T getEventHandler(Class<T> functionalInterface) {
         if (functionalInterface.equals(AfterDamage.class)) {
             return (T) (AfterDamage) (LivingEntity entity, DamageSource source, float baseDamageTaken, float damageTaken, boolean blocked) -> {
-                if (!(source.getEntity() instanceof Player attacker) || !attacker.equals(this.player) || !(entity instanceof Player victim)) return;
+                if (!(source.getEntity() instanceof ServerPlayer attacker) || !attacker.equals(this.player) || !(entity instanceof ServerPlayer victim)) return;
                 Map<String, Object> varMap = Map.of(
                         "mana", mana,
                         "manaLimit", manaLimit,
