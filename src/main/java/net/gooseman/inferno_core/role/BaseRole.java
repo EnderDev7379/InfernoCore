@@ -2,12 +2,13 @@ package net.gooseman.inferno_core.role;
 
 import net.gooseman.inferno_core.ModRegistries;
 import net.gooseman.inferno_core.mana.PlayerMana;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public class BaseRole implements Role {
-    protected Player player;
+    protected ServerPlayer player;
 
-    public BaseRole(Player player) {
+    public BaseRole(ServerPlayer player) {
         this.player = player;
     }
 
