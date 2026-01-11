@@ -7,7 +7,6 @@ import net.gooseman.inferno_core.component.mana.PlayerManaHolderComponent;
 import net.gooseman.inferno_core.role.BaseRole;
 import net.gooseman.inferno_core.role.Role;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -17,9 +16,9 @@ import static net.gooseman.inferno_core.InfernoCore.MOD_ID;
 
 public class PlayerRoleHolderComponent implements RoleHolderComponent {
     Role role;
-    ServerPlayer player;
+    Player player;
 
-    public PlayerRoleHolderComponent(ServerPlayer player) {
+    public PlayerRoleHolderComponent(Player player) {
         this.player = player;
         this.role = new BaseRole(player);
     }

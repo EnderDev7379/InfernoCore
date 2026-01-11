@@ -7,9 +7,10 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public class MephistoRole extends BaseRole {
+    public boolean mephistoMode = true;
+
     public MephistoRole(Player player) {
         super(player);
-        this.roleState = PlayerRoleState.INVISIBLE;
     }
 
     @Override
@@ -24,6 +25,11 @@ public class MephistoRole extends BaseRole {
 
     @Override
     public void readAdditional(ValueInput readView) {
-        roleState = PlayerRoleState.values()[(readView.getIntOr("roleState", PlayerRoleState.INVISIBLE.ordinal()))];
+        mephistoMode = readView.getBooleanOr("mephistoMode", true);
+    }
+
+    @Override
+    public void writeAdditional(ValueOutput writeView) {
+        writeView.putBoolean("mephistoMode", mephistoMode);
     }
 }

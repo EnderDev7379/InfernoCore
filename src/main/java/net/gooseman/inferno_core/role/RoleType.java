@@ -4,7 +4,6 @@ import net.gooseman.inferno_core.InfernoCore;
 import net.gooseman.inferno_core.ModRegistries;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public class RoleType<T extends Role> {
@@ -16,7 +15,7 @@ public class RoleType<T extends Role> {
         this.factory = factory;
     }
 
-    public T create(ServerPlayer player) {
+    public T create(Player player) {
         return factory.create(player);
     }
 
@@ -31,6 +30,6 @@ public class RoleType<T extends Role> {
 
     @FunctionalInterface
     public interface RoleFactory<T extends Role> {
-        T create(ServerPlayer player);
+        T create(Player player);
     }
 }

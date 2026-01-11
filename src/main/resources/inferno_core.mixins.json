@@ -7,7 +7,7 @@
     "FarmBlockMixin",
     "FoodDataMixin",
     "HealOrHarmEffectMixin",
-    "PlayerListMixin",
+    "PlayerMixin",
     "RegenerationEffectMixin"
   ],
   "injectors": {
