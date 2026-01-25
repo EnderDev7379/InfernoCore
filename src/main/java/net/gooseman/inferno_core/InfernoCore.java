@@ -33,6 +33,8 @@ public class InfernoCore implements ModInitializer {
 	public static HashMap<UUID, ServerBossEvent> combatBossEvents = new HashMap<>();
 	public static HashMap<UUID, UUID> playerCombatBossEvents = new HashMap<>();
 
+	public static boolean returnAdminName = false;
+
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.

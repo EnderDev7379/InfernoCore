@@ -13,16 +13,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import java.util.List;
 
 public class MephistoRole extends BaseRole {
-    public boolean mephistoMode = true;
-
     public MephistoRole(ServerPlayer player) {
         super(player);
-        if (mephistoMode) {
-            assert player.getServer() != null;
-            PlayerList playerList = player.getServer().getPlayerList();
-            playerList.broadcastAll(new ClientboundPlayerInfoRemovePacket(List.of(player.getUUID())));
-            playerList.broadcastAll(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(player)));
-        }
     }
 
     @Override
@@ -36,23 +28,7 @@ public class MephistoRole extends BaseRole {
     }
 
     @Override
-    public void readAdditional(ValueInput readView) {
-        mephistoMode = readView.getBooleanOr("mephistoMode", true);
-    }
-
-    @Override
-    public void writeAdditional(ValueOutput writeView) {
-        writeView.putBoolean("mephistoMode", mephistoMode);
-    }
-
-    @Override
     public void reset() {
         super.reset();
-        if (mephistoMode) {
-            assert player.getServer() != null;
-            PlayerList playerList = player.getServer().getPlayerList();
-            playerList.broadcastAll(new ClientboundPlayerInfoRemovePacket(List.of(player.getUUID())));
-            playerList.broadcastAll(ClientboundPlayerInfoUpdatePacket.createPlayerInitializing(List.of(player)));
-        }
     }
 }

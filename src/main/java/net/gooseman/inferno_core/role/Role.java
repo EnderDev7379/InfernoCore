@@ -14,4 +14,6 @@ public interface Role {
     void reset();
     default void readAdditional(ValueInput readView) {}
     default void writeAdditional(ValueOutput writeView) {}
+    PlayerRoleState getRoleState();
+    void setRoleState(PlayerRoleState roleState);
 }

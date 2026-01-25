@@ -3,6 +3,7 @@
   "package": "net.gooseman.inferno_core.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ClientboundPlayerInfoUpdatePacketEntryMixin",
     "EntityMixin",
     "FarmBlockMixin",
     "FoodDataMixin",

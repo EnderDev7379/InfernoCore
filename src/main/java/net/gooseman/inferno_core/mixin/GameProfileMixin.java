@@ -3,9 +3,11 @@ package net.gooseman.inferno_core.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.loader.api.FabricLoader;
+import net.gooseman.inferno_core.InfernoCore;
 import net.gooseman.inferno_core.component.role.RoleHolderComponent;
 import net.gooseman.inferno_core.role.MephistoRole;
 import net.gooseman.inferno_core.role.PlayerRoleState;
+import net.gooseman.inferno_core.role.Role;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -34,7 +36,12 @@ public class GameProfileMixin {
         ServerPlayer player = playerList.getPlayer(id);
         if (player == null) return original;
 
-        if (RoleHolderComponent.KEY.get(player).get() instanceof MephistoRole role && role.mephistoMode) return "§kMephisto§r";
-        return original;
+        Role role = RoleHolderComponent.KEY.get(player).get();
+
+        return switch (role.getRoleState()) {
+            case MEPHISTO -> InfernoCore.returnAdminName ? String.format("§kMephisto§r (%s)", original) : "§kMephisto§r";
+            case INVISIBLE -> InfernoCore.returnAdminName ? String.format("%s (Invisible)", original) : "INVALID PLAYER";
+            default -> original;
+        };
     }
 }

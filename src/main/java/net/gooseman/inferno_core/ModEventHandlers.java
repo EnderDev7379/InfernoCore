@@ -116,6 +116,7 @@ public class ModEventHandlers {
         ServerPlayerEvents.JOIN.register(player -> {
             PlayerManaHolderComponent manaHolder = (PlayerManaHolderComponent) ManaHolderComponent.KEY.get(player);
             manaHolder.overrideMana(RoleHolderComponent.KEY.get(player).get().getDefaultMana(), true);
+//            player.getGameProfile().testMethod(3);
         });
 
         ServerPlayerEvents.LEAVE.register(player -> {
